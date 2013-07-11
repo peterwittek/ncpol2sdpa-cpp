@@ -1,0 +1,3 @@
+bin_PROGRAMS=exampleNcPol hamiltonian
+exampleNcPol_SOURCES=SdpRelaxation.cpp ncUtils.cpp exampleNcPol.cpp
+hamiltonian_SOURCES=SdpRelaxation.cpp ncUtils.cpp hamiltonian.cpp

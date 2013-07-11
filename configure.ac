@@ -26,8 +26,35 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE(
     check_type c;
     check_type&& cr = static_cast<check_type&&>(c);]])],,
   AC_MSG_FAILURE(['$CXX $CXXFLAGS' does not accept ISO C++11]))
+
+SYMBOLICCPP_INC=""
+AC_ARG_WITH(symbolicc++-incdir,
+AS_HELP_STRING([--with-symbolicc++-incdir=DIR],[SymbolicC++ include directory @<:@default /usr/include@:>@]),
+[
+  if test "X${withval}" = "Xno"; then :; else
+    SYMBOLICCPP_INC="-I${withval}"
+    AC_MSG_CHECKING(user-defined symbolicc++ includes)
+    AC_MSG_RESULT([${SYMBOLICCPP_INC}])
+  fi
+]
+)
+
+CXXFLAGS="$CXXFLAGS $SYMBOLICCPP_INC"
+
+SYMBOLICCPP_LIBDIR=""
+AC_ARG_WITH(symbolicc++-libdir,
+AS_HELP_STRING([--with-symbolicc++-libdir=DIR],[SymbolicC++ library directory @<:@default /usr/lib@:>@]),
+[
+  if test "X${withval}" = "Xno"; then :; else
+    SYMBOLICCPP_LIBDIR="-L${withval}"
+    AC_MSG_CHECKING(user-defined symbolicc++ library directory)
+    AC_MSG_RESULT([${SYMBOLICCPP_LIBDIR}])
+
+  fi
+]
+)
   
-LIBS="$LIBS -lsymbolicc++"
+LIBS="$LIBS $SYMBOLICCPP_LIBDIR -lsymbolicc++"
 AC_LINK_IFELSE(
       [AC_LANG_PROGRAM([#include "symbolicc++.h"],
         [Symbolic X("X")])],

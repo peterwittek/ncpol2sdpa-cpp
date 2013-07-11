@@ -13,3 +13,19 @@ The code requires [SymbolicC++](http://issc.uj.ac.za/symbolic/symbolic.html) to 
 Usage
 ==
 A simple usage example is included in examplencpol.cpp. A more sophisticated application is given in hamiltonian.cpp, which implements the Hamiltonian of a fermionic system in a 2D grid.
+
+Compilation & Installation
+==
+From GIT repository first run
+
+    $ ./autogen.sh
+
+Then follow the standard procedure:
+
+    $ ./configure [options]
+    $ make
+
+Options for configure
+
+    --with-symbolicc++-incdir=DIR   SymbolicC++ include directory [default /usr/include]
+    --with-symbolicc++-libdir=DIR   SymbolicC++ library directory [default /usr/lib]

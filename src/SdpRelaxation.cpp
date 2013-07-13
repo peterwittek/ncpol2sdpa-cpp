@@ -39,7 +39,8 @@ Symbolic SdpRelaxation::applySubstitution(Symbolic monomial) {
 	while (changed) {
 		originalMonomial = monomial;
 		for (auto ii = substitutions.begin(); ii != substitutions.end(); ii++) {
-			monomial = monomial.subst_all(ii->first, ii->second);
+//			monomial = monomial.subst_all(ii->first, ii->second);
+			monomial = fastSubstitute(monomial, ii->first, ii->second);
 		}
 		if (originalMonomial == monomial) {
 			changed = false;

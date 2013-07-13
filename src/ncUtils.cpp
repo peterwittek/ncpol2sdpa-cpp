@@ -40,6 +40,121 @@ Symbolic conjugate(const Symbolic monomial) {
 	return result;
 }
 
+Symbolic fastSubstitute(Symbolic monomial, Symbolic oldSub, Symbolic newSub) {
+	bool isOldSubProduct = false;
+	list<Symbolic> oldSubFactors;
+	if (oldSub.type() == typeid(Product)) {
+		isOldSubProduct = true;
+		oldSubFactors = CastPtr<const Product>(oldSub)->factors;
+		list<Symbolic>::const_iterator subFactor = oldSubFactors.begin();
+	}
+	if (monomial.type() == typeid(Product)) {
+		bool changed = false;
+		list<Symbolic> result;
+		Symbolic remainder;
+		list<Symbolic> factors = CastPtr<const Product>(monomial)->factors;
+		list<Symbolic>::const_iterator factor = factors.begin();
+		while ( factor != factors.end()) {
+			if (!isOldSubProduct){
+				if (*factor == oldSub){
+//					newMonomial *= newSub;
+					result.push_back(newSub);
+					++factor;
+					changed = true;
+					break;
+				} else {
+					result.push_back(*factor);
+//					newMonomial *= *factor;
+				}
+			} else {
+				remainder = 1;
+				list<Symbolic>::const_iterator it1 = factor;
+				list<Symbolic>::const_iterator it2 = oldSubFactors.begin();
+				bool match = false;
+			    while (true) {    // or: while (pred(*it1,*it2)) for version 2
+			    	if (it1!=factors.end() && it2!=oldSubFactors.end()) {
+			    		if ((it1->type() == typeid(Symbol) && it2->type() == typeid(Symbol))){
+			    			if (*it1!=*it2) {
+			    				break;
+			    			}
+			    		} else if (it1->type() == typeid(Power)) {
+							CastPtr<const Power> p = *it1;
+							Symbolic x = (Symbolic) p->parameters.front();
+							int degree1 = (int) p->parameters.back();
+							Symbolic y; int degree2=1;
+							if (it2->type() == typeid(Symbol)) {
+								y = *it2;
+							} else {
+								CastPtr<const Power> p2 = *it2;
+								y = (Symbolic) p2->parameters.front();
+								degree2 = (int) p2->parameters.back();
+							}
+							if ( x != y) {
+								break;
+							}
+							if (degree2 > degree1) {
+								break;
+							} else if (degree2 < degree1) {
+								++it2;
+								if (it2!=oldSubFactors.end()) {
+									break;
+									--it2;
+								} else {
+									remainder = x^(degree1-1);
+									++it1;
+									match = true;
+									break;
+								}
+							}
+			    		} else {
+			    			break;
+			    		}
+			    	}
+			        if (it2==oldSubFactors.end()) {
+			        	match = true;
+			        	break;
+			        }
+			        if (it1==factors.end()) {
+			        	break;
+			        }
+			    	++it1; ++it2;
+			    }
+			    if (match) {
+			    	changed = true;
+			    	result.push_back(newSub);
+			    	if (remainder != 1) {
+			    		result.push_back(remainder);
+			    	}
+//			    	newMonomial *= newSub * remainder;
+					factor=it1;
+			    	break;
+			    } else {
+			    	result.push_back(*factor);
+//			    	newMonomial *= *factor;
+			    }
+			}
+			++factor;
+		}
+		if (changed) {
+			Product newMonomial;
+			for(list<Symbolic>::const_iterator i=result.begin();i!=result.end();++i)
+			  newMonomial.factors.push_back(*i);
+			while ( factor != factors.end()) {
+				newMonomial.factors.push_back(*factor);
+	//			newMonomial *= *factor;
+				++factor;
+			}
+			return newMonomial;
+		} else {
+			return monomial;
+		}
+	} else if (monomial==oldSub){
+		return newSub;
+	} else {
+		return monomial;
+	}
+}
+
 int ncDegree(const Symbolic monomial) {
 	int degree = 0;
 	if (monomial.type() == typeid(Product)) {

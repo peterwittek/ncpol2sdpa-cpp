@@ -33,10 +33,11 @@ struct hashMonomial {
 };
 
 Symbolic conjugate(const Symbolic monomial);
-int ncDegree(const Symbolic monomial);
 int countNcMonomials(const vector<Symbolic> monomials, const short int degree);
-vector<Symbolic> unique(const list<Symbolic> l);
-int index2linear(const int i, const int j, const int nMonomials);
+Symbolic fastSubstitute(Symbolic monomial, Symbolic oldSub, Symbolic newSub);
 double getCoefficient(const Symbolic monomial);
+int index2linear(const int i, const int j, const int nMonomials);
+int ncDegree(const Symbolic monomial);
+vector<Symbolic> unique(const list<Symbolic> l);
 
 #endif

@@ -62,7 +62,7 @@ vector<Symbolic> getNeighbors(Symbolic X, short int r,
 }
 
 int main(void) {
-	short int latticeDimensions = 5;
+	short int latticeDimensions = 4;
 	short int nVars = latticeDimensions * latticeDimensions;
 	short int order = 2;
 
@@ -93,10 +93,10 @@ int main(void) {
 	for (short int r = 0; r < nVars; ++r) {
 		for (short int s = r; s < nVars; ++s) {
 			if (r != s) {
-				equalities.push_back(C(r) * C(s) + C(s) * C(r));
+//				equalities.push_back(C(r) * C(s) + C(s) * C(r));
 				// Monomial substitutions result in much sparser
 				// SDPs, but they are slower to generate
-				// substitutions[C(r)*C(s)]=-C(s)*C(r);
+				 substitutions[C(r)*C(s)]=-C(s)*C(r);
 			} else {
 				equalities.push_back(C(r) * C(s) + C(s) * C(r) - 1);
 			}

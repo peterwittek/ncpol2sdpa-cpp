@@ -55,7 +55,7 @@ private:
 	void generateMomentMatrix(const vector<Symbolic> monomials, int *blockIndex,
 			int *nEq);
 	void processInequalities(const vector<Symbolic> inequalities,
-			const vector<Symbolic> monomials, int *blockIndex, const int order);
+			const vector<Symbolic> monomials, const int blockIndex, const int order);
 	void pushFacVarSparse(const Symbolic polynomial, const int blockIndex,
 			const int i, const int j);
 

@@ -63,5 +63,8 @@ AC_LINK_IFELSE(
        exit -1
       ])
 
+AC_OPENMP
+CXXFLAGS="${CXXFLAGS} ${OPENMP_CXXFLAGS}"
+
 AC_CONFIG_FILES(Makefile src/Makefile)
 AC_OUTPUT

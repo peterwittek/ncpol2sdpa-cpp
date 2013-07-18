@@ -8,7 +8,7 @@ The implementation has an intuitive syntax for entering Hamiltonians and it scal
 
 Dependencies
 ==
-The code requires [SymbolicC++](http://issc.uj.ac.za/symbolic/symbolic.html) to compile and it relies on the C++11 standard. GCC 4.8.1 is known to compile the code.
+The code requires [SymbolicC++](http://issc.uj.ac.za/symbolic/symbolic.html) to compile and it relies on the C++11 standard. GCC 4.8.1 is known to compile the code. If Ncpol2sdpa-Cpp is compiled with OpenMP support, SymbolicC++ needs a [patch](http://peterwittek.com/files/openmp_patch.txt) to ensure thread-safety.
 
 Usage
 ==

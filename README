@@ -27,5 +27,11 @@ Then follow the standard procedure:
 
 Options for configure
 
+    --enable-openmp Enable OpenMP support (experimental)
+
+OpenMP support is still experimental and deadlocks occur in larger problems.
+
     --with-symbolicc++-incdir=DIR   SymbolicC++ include directory [default /usr/include]
     --with-symbolicc++-libdir=DIR   SymbolicC++ library directory [default /usr/lib]
+
+Specify these directories if the compiler cannot see them in the include and library paths.

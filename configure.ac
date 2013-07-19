@@ -63,8 +63,16 @@ AC_LINK_IFELSE(
        exit -1
       ])
 
-AC_OPENMP
-CXXFLAGS="${CXXFLAGS} ${OPENMP_CXXFLAGS}"
+AC_MSG_CHECKING(--enable-openmp argument)
+AC_ARG_ENABLE(openmp,
+    [  --enable-openmp         Use OpenMP (experimental).],
+    [enable_openmp=$enableval],
+    [enable_openmp="no"])
+AC_MSG_RESULT($enable_openmp)
+if test "$enable_openmp" = "yes"; then
+  AC_OPENMP
+  CXXFLAGS="${CXXFLAGS} ${OPENMP_CXXFLAGS}"
+fi
 
 AC_CONFIG_FILES(Makefile src/Makefile)
 AC_OUTPUT

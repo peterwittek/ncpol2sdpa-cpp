@@ -66,9 +66,16 @@ $ make
 
 <p>Options for configure</p>
 
+<pre><code>--enable-openmp Enable OpenMP support (experimental)
+</code></pre>
+
+<p>OpenMP support is still experimental and deadlocks occur in larger problems.</p>
+
 <pre><code>--with-symbolicc++-incdir=DIR   SymbolicC++ include directory [default /usr/include]
 --with-symbolicc++-libdir=DIR   SymbolicC++ library directory [default /usr/lib]
 </code></pre>
+
+<p>Specify these directories if the compiler cannot see them in the include and library paths.</p>
       </section>
     </div>
 

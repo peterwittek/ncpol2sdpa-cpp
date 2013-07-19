@@ -56,21 +56,19 @@ Symbolic fastSubstitute(Symbolic monomial, Symbolic oldSub, Symbolic newSub) {
 		while ( factor != factors.end()) {
 			if (!isOldSubProduct){
 				if (*factor == oldSub){
-//					newMonomial *= newSub;
 					result.push_back(newSub);
 					++factor;
 					changed = true;
 					break;
 				} else {
 					result.push_back(*factor);
-//					newMonomial *= *factor;
 				}
 			} else {
 				remainder = 1;
 				list<Symbolic>::const_iterator it1 = factor;
 				list<Symbolic>::const_iterator it2 = oldSubFactors.begin();
 				bool match = false;
-			    while (true) {    // or: while (pred(*it1,*it2)) for version 2
+			    while (true) {
 			    	if (it1!=factors.end() && it2!=oldSubFactors.end()) {
 			    		if ((it1->type() == typeid(Symbol) && it2->type() == typeid(Symbol))){
 			    			if (*it1!=*it2) {
@@ -124,12 +122,10 @@ Symbolic fastSubstitute(Symbolic monomial, Symbolic oldSub, Symbolic newSub) {
 			    	if (remainder != 1) {
 			    		result.push_back(remainder);
 			    	}
-//			    	newMonomial *= newSub * remainder;
 					factor=it1;
 			    	break;
 			    } else {
 			    	result.push_back(*factor);
-//			    	newMonomial *= *factor;
 			    }
 			}
 			++factor;
@@ -140,7 +136,6 @@ Symbolic fastSubstitute(Symbolic monomial, Symbolic oldSub, Symbolic newSub) {
 			  newMonomial.factors.push_back(*i);
 			while ( factor != factors.end()) {
 				newMonomial.factors.push_back(*factor);
-	//			newMonomial *= *factor;
 				++factor;
 			}
 			return newMonomial;

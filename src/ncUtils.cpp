@@ -46,7 +46,6 @@ Symbolic fastSubstitute(Symbolic monomial, Symbolic oldSub, Symbolic newSub) {
 	if (oldSub.type() == typeid(Product)) {
 		isOldSubProduct = true;
 		oldSubFactors = CastPtr<const Product>(oldSub)->factors;
-		list<Symbolic>::const_iterator subFactor = oldSubFactors.begin();
 	}
 	if (monomial.type() == typeid(Product)) {
 		bool changed = false;

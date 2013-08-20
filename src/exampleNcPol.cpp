@@ -42,16 +42,16 @@ int main(void) {
 	// Setting objective function
 	Symbolic objective = X(0) * X(1) + X(1) * X(0);
 
-	// Defining monomial substitutions
-	unordered_map<Symbolic, Symbolic, hashMonomial> substitutions;
-	substitutions[X(0)*X(0)] = X(0);
-
 	// Defining inequalities
 	vector<Symbolic> inequalities;
 	inequalities.push_back(-X(1)*X(1) + X(1) + 0.5);
 
 	// Defining equalities
 	vector<Symbolic> equalities;
+
+	// Defining monomial substitutions
+	unordered_map<Symbolic, Symbolic, hashMonomial> substitutions;
+	substitutions[X(0)*X(0)] = X(0);
 
 	// Obtaining relaxation and writing file
     SdpRelaxation *sdpRelaxation = new SdpRelaxation(substitutions);

@@ -2,6 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
 AC_INIT(ncpol2sdpa, 1.0)
+LT_INIT
 AC_LANG(C++)
 
 AC_CANONICAL_SYSTEM

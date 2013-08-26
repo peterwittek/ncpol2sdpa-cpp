@@ -75,5 +75,5 @@ if test "$enable_openmp" = "yes"; then
   CXXFLAGS="${CXXFLAGS} ${OPENMP_CXXFLAGS}"
 fi
 
-AC_CONFIG_FILES(Makefile src/Makefile)
+AC_CONFIG_FILES(Makefile src/Makefile test/Makefile)
 AC_OUTPUT

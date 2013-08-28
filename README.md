@@ -14,6 +14,8 @@ Usage
 ==
 A simple usage example is included in examplencpol.cpp. A more sophisticated application is given in hamiltonian.cpp, which implements the Hamiltonian of a fermionic system in a 2D grid.
 
+The implementation installs as a library. Subsequent use must specify the include directory of the header files and the library for compilation. 
+
 Compilation & Installation
 ==
 From GIT repository first run
@@ -24,6 +26,7 @@ Then follow the standard procedure:
 
     $ ./configure [options]
     $ make
+    $ make install
 
 Options for configure
 

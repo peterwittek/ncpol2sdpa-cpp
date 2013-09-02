@@ -38,3 +38,9 @@ OpenMP support is still experimental and deadlocks occur in larger problems.
     --with-symbolicc++-libdir=DIR   SymbolicC++ library directory [default /usr/lib]
 
 Specify these directories if the compiler cannot see them in the include and library paths.
+
+More Information
+==
+For more information refer to the following manuscript:
+
+[http://arxiv.org/abs/1308.6029](http://arxiv.org/abs/1308.6029)

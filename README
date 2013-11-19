@@ -39,6 +39,12 @@ OpenMP support is still experimental and deadlocks occur in larger problems.
 
 Specify these directories if the compiler cannot see them in the include and library paths.
 
+Known Issues
+==
+Hermicity of noncommuting variables is not handled correctly.
+
+The fast submonomial substitution does not handle some rare cases.
+
 More Information
 ==
 For more information refer to the following manuscript:

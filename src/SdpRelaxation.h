@@ -52,8 +52,7 @@ private:
 	Symbolic applySubstitution(Symbolic monomial);
 	vector<Symbolic> getNcMonomials(const Symbolic variables, short int degree);
 	double *getFacVar(const Symbolic polynomial);
-	void generateMomentMatrix(const vector<Symbolic> monomials, int *blockIndex,
-			int *nEq);
+	void generateMomentMatrix(const vector<Symbolic> monomials, int *blockIndex);
 	void processInequalities(const vector<Symbolic> inequalities,
 			const vector<Symbolic> monomials, const int blockIndex, const int order);
 	void pushFacVarSparse(const Symbolic polynomial, const int blockIndex,

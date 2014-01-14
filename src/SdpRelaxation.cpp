@@ -65,9 +65,7 @@ vector<Symbolic> SdpRelaxation::getNcMonomials(const Symbolic variables,
 			for (list<Symbolic>::const_iterator newVar = ncMonomials.begin();
 					newVar != ncMonomials.end(); ++newVar) {
 				Symbolic monomial = variables(i) * (*newVar);
-				if (substitutions.count(monomial) == 0) {
-					temp.push_back(monomial);
-				}
+				temp.push_back(monomial);
 			}
 		}
 		ncMonomials.splice(ncMonomials.end(), temp);
@@ -78,33 +76,37 @@ vector<Symbolic> SdpRelaxation::getNcMonomials(const Symbolic variables,
 }
 
 void SdpRelaxation::generateMomentMatrix(const vector<Symbolic> monomials,
-		int *blockIndex, int *nEq) {
+		int *blockIndex) {
 	Entry entry;
 	*blockIndex = 1;
-	*nEq = 1;
+	int nEq = 1;
 	// Defining top left corner of momentum matrix
 	entry.blockIndex = *blockIndex;
-	entry.row = *nEq;
-	entry.column = *nEq;
+	entry.row = nEq;
+	entry.column = nEq;
 	entry.value = 1;
 	F[0].push_back(entry);
 	F[index2linear(0, 0, nMonomials)].push_back(entry);
-	++(*nEq);
-	entry.row = *nEq;
-	entry.column = *nEq;
+	++nEq;
+	entry.row = nEq;
+	entry.column = nEq;
 	entry.value = -1;
 	F[0].push_back(entry);
 	F[index2linear(0, 0, nMonomials)].push_back(entry);
-	++(*nEq);
+	blockStruct.push_back(-nEq);
 	// Generating the rest of the matrix
+  ++(*blockIndex);
+  entry.blockIndex = *blockIndex;
 	Index index;
-	Symbolic monomial;
-	#pragma omp parallel default(shared) private(index, entry, monomial)
+	Symbolic monomial, monomial_dagger;
+  int k, k_dagger;
+  float value;
+	#pragma omp parallel default(shared) private(index, entry, k, k_dagger, monomial, monomial_dagger, value)
 	{
 	#pragma omp for schedule(runtime)
-	for (int i = 0; i < nMonomials; ++i) {
-		for (int j = i; j < nMonomials; ++j) {
-			monomial = conjugate(monomials[i]) * monomials[j];
+	for (int row = 0; row < nMonomials; ++row) {
+		for (int column = row; column < nMonomials; ++column) {
+			monomial = conjugate(monomials[row]) * monomials[column];
 			monomial = applySubstitution(monomial);
 			if (getCoefficient(monomial) < 0) {
 				monomial = -monomial;
@@ -112,34 +114,52 @@ void SdpRelaxation::generateMomentMatrix(const vector<Symbolic> monomials,
 			index = monomialDictionary[monomial];
 			#pragma omp critical(update)
 			{
-			if (index.first == 0 && index.second == 0) {
-				index.first = i;
-				index.second = j;
-				monomialDictionary[monomial] = index;
-			} else {
-				entry.row = *nEq;
-				entry.column = *nEq;
-				entry.value = 1;
-				F[index2linear(index.first, index.second, nMonomials)].push_back(
-						entry);
-				entry.value = -1;
-				F[index2linear(i, j, nMonomials)].push_back(entry);
-				++(*nEq);
-				entry.row = *nEq;
-				entry.column = *nEq;
-				entry.value = -1;
-				F[index2linear(index.first, index.second, nMonomials)].push_back(
-						entry);
-				entry.value = 1;
-				F[index2linear(i, j, nMonomials)].push_back(entry);
-				++(*nEq);
-			}
+        if (index.first == 0 && index.second == 0) {
+          index.first = row;
+          index.second = column;
+          monomialDictionary[monomial] = index;
+          k = index2linear(row, column, nMonomials);
+        } else {
+          k = index2linear(index.first, index.second, nMonomials);
+        }
+        if (row == column) {
+          value = 1;
+        } else {
+          value = 0.5;
+          monomial_dagger = conjugate(monomials[column]) * monomials[row];
+			    monomial_dagger = applySubstitution(monomial_dagger);
+          if (getCoefficient(monomial_dagger) < 0) {
+            monomial_dagger = -monomial_dagger;
+          }
+          index = monomialDictionary[monomial_dagger];
+          if (index.first == 0 && index.second == 0) {
+            index.first = column;
+            index.second = row;
+            monomialDictionary[monomial] = index;
+            k_dagger = index2linear(column, row, nMonomials);
+          } else {
+            k_dagger = index2linear(index.first, index.second, nMonomials);
+          }
+          if (k_dagger == k) {
+            value = 1;
+          } else {
+            entry.row = row + 1;
+            entry.column = column + 1;
+            entry.value = value;
+            F[k_dagger].push_back(entry);
+          }
+        }
+        entry.row = row + 1;
+        entry.column = column + 1;
+        entry.value = value;
+        F[k].push_back(entry);
 			}
 		}
 	}
 	}
 	#pragma omp barrier
-	--(*nEq);
+  blockStruct.push_back(nMonomials);
+  ++(*blockIndex);
 }
 
 double *SdpRelaxation::getFacVar(const Symbolic polynomial) {
@@ -183,12 +203,12 @@ void SdpRelaxation::pushFacVarSparse(const Symbolic polynomial,
 		Symbolic newMonomial = applySubstitution(*monomial / coeff);
 		if (getCoefficient(newMonomial) < 0) {
 			newMonomial = -1 * newMonomial;
-			coeff = -1 * coeff;
+			coeff = -1.0 * coeff;
 		}
 		Index index = monomialDictionary[newMonomial];
 		entry.blockIndex = blockIndex;
 		entry.row = i + 1;
-		entry.column = j + 1; //index.second+1;
+		entry.column = j + 1; 
 		entry.value = coeff;
 		int k = index2linear(index.first, index.second, nMonomials);
 		#pragma omp critical(pushFacVarSparse)
@@ -206,19 +226,24 @@ void SdpRelaxation::processInequalities(const vector<Symbolic> inequalities,
 	}
 	#pragma omp parallel default(shared)
 	{
-//	for (auto ineq = inequalities.begin(); ineq != inequalities.end(); ++ineq) {
-	#pragma omp for schedule(runtime)
-	for (int k = 0; k<inequalities.size(); ++k) {
-		int localBlockIndex = blockIndex + k;
-		for (int i = 0; i < nIneqMonomials; ++i) {
-			for (int j = i; j < nIneqMonomials; ++j) {
-				Symbolic polynomial = conjugate(monomials[i]) * inequalities[k]
-						* monomials[j];
-				pushFacVarSparse(polynomial, localBlockIndex, i, j);
-			}
-		}
-	}
-	}
+    #pragma omp for schedule(runtime)
+    for (int k = 0; k<inequalities.size(); ++k) {
+      int localBlockIndex = blockIndex + k;
+      for (int row = 0; row < nIneqMonomials; ++row) {
+        for (int column = row; column < nIneqMonomials; ++column) {
+          Symbolic polynomial = conjugate(monomials[row]) * inequalities[k]
+              * monomials[column];
+          if (row == column) {
+              pushFacVarSparse(polynomial, localBlockIndex, row, column);
+          } else {
+              Symbolic polynomial_dagger = conjugate(monomials[column]) * inequalities[k] * monomials[row];
+              Symbolic poly = 0.5*polynomial_dagger + 0.5*polynomial;
+              pushFacVarSparse(poly, localBlockIndex, row, column);          
+          }
+        }
+      }
+    }
+	} // End pragma
 }
 
 /** Obtain SDP relaxation
@@ -234,14 +259,11 @@ void SdpRelaxation::getRelaxation(const Symbolic variables,
 
 	vector<Symbolic> monomials = getNcMonomials(variables, order);
 	nMonomials = monomials.size();
-	nElements = nMonomials * (nMonomials + 1) / 2;
-
+	nElements = nMonomials * nMonomials; 
 	F = new list<Entry> [nElements + 1];
 	cout << "Generating moments..." << endl;
-	int blockIndex, nEq;
-	generateMomentMatrix(monomials, &blockIndex, &nEq);
-	blockStruct.push_back(-nEq);
-
+	int blockIndex;
+	generateMomentMatrix(monomials, &blockIndex);
 	// Objective function needs dense representation
 	objFacVar = getFacVar(objective);
 
@@ -255,20 +277,7 @@ void SdpRelaxation::getRelaxation(const Symbolic variables,
 
 	cout << "Processing " << inequalities.size() << " inequalitites..." << endl;
 	processInequalities(inequalities, monomials, blockIndex, order);
-	// Finally add the SDP constraint on the moment matrix
-	blockIndex += inequalities.size() + 1;
-	blockStruct.push_back(nMonomials);
-	Entry entry;
-	for (int i = 0; i < nMonomials; ++i) {
-		for (int j = i; j < nMonomials; ++j) {
-			int k = index2linear(i, j, nMonomials);
-			entry.blockIndex = blockIndex;
-			entry.row = i + 1;
-			entry.column = j + 1;
-			entry.value = 1;
-			F[k].push_back(entry);
-		}
-	}
+
 }
 
 /** Write an SDP relaxation to SDPA format

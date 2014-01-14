@@ -206,8 +206,7 @@ int index2linear(const int i, const int j, const int nMonomials) {
 	if (i == 0) {
 		return j + 1;
 	}
-	int skew = i * (i + 1) / 2;
-	return i * nMonomials - skew + j + 1;
+  return i * nMonomials + j + 1;
 }
 
 double getCoefficient(const Symbolic monomial) {

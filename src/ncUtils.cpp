@@ -22,6 +22,9 @@
 #include <unordered_map>
 #include "ncUtils.h"
 
+/**
+ * A simple routine of conjugating a monomial of Hermitian variables
+ */
 Symbolic conjugate(const Symbolic monomial) {
 	Symbolic result = Symbolic(1);
 	if (monomial.type() == typeid(Product)) {
@@ -40,6 +43,16 @@ Symbolic conjugate(const Symbolic monomial) {
 	return result;
 }
 
+/**
+ * Experimental fast substitution routine that considers only restricted 
+ * cases of noncommutative algebras. In rare cases, it fails to find a
+ * substitution. Use it with proper testing.
+ *
+ * Arguments:
+ * @param monomial - the monomial with parts need to be substituted
+ * @param oldSub - the part to be replaced
+ * @param newSub - the replacement
+ */
 Symbolic fastSubstitute(Symbolic monomial, Symbolic oldSub, Symbolic newSub) {
 	bool isOldSubProduct = false;
 	list<Symbolic> oldSubFactors;
@@ -149,6 +162,9 @@ Symbolic fastSubstitute(Symbolic monomial, Symbolic oldSub, Symbolic newSub) {
 	}
 }
 
+/**
+ * Returns the degree of a noncommutative polynomial.
+ */ 
 int ncDegree(const Symbolic monomial) {
 	int degree = 0;
 	if (monomial.type() == typeid(Product)) {
@@ -176,6 +192,17 @@ int ncDegree(const Symbolic monomial) {
 	return degree;
 }
 
+/**
+ * Given a list of monomials, it counts those that have a certain degree,
+ * or less. The function is useful when certain monomials were eliminated
+ * from the basis.
+ * 
+ * Arguments:
+ * @param variables - the noncommutative variables making up the monomials
+ * @param degree -- maximum degree to count
+
+ * Returns the count of appropriate monomials.
+ */
 int countNcMonomials(const vector<Symbolic> monomials, const short int degree) {
 	int count = 0;
 	for (vector<Symbolic>::const_iterator i = monomials.begin();
@@ -189,6 +216,9 @@ int countNcMonomials(const vector<Symbolic> monomials, const short int degree) {
 	return count;
 }
 
+/**
+ * Helper function to include only unique monomials in a basis.
+ */ 
 vector<Symbolic> unique(const list<Symbolic> l) {
 	vector<Symbolic> result;
 	unordered_map<Symbolic, int, hashMonomial> seen;
@@ -209,6 +239,9 @@ int index2linear(const int i, const int j, const int nMonomials) {
   return i * nMonomials + j + 1;
 }
 
+/**
+ * Helper function to get the coefficient of a monomial.
+ */ 
 double getCoefficient(const Symbolic monomial) {
 	double result = 1.0;
 	if (monomial.type() == typeid(Product)) {

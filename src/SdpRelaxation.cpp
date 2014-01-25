@@ -47,8 +47,8 @@ Symbolic SdpRelaxation::applySubstitution(Symbolic monomial) {
       // conditions. In production environments, it is safer to use
       // the default substitution routine that comes with SymPy.      
 
-			monomial = fastSubstitute(monomial, ii->first, ii->second);
-      // monomial = monomial.subst_all(ii->first, ii->second);
+			// monomial = fastSubstitute(monomial, ii->first, ii->second);
+      monomial = monomial.subst_all(ii->first, ii->second);
 		}
 		if (originalMonomial == monomial) {
 			changed = false;

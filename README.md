@@ -12,7 +12,7 @@ The code requires [SymbolicC++](http://issc.uj.ac.za/symbolic/symbolic.html) to 
 
 Usage
 ==
-A simple usage example is included in examplencpol.cpp. A more sophisticated application is given in hamiltonian.cpp, which implements the Hamiltonian of a fermionic system in a 2D grid.
+A simple usage example is included in examplencpol.cpp. A more sophisticated application is given in benchmarkCase.cpp, which implements the Hamiltonian of a bosonic system on a 1D line.
 
 The implementation installs as a library. Subsequent use must specify the include directory of the header files and the library for compilation. 
 

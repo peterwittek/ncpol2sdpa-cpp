@@ -48,7 +48,7 @@
 <h1>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
 
-<p>A simple usage example is included in examplencpol.cpp. A more sophisticated application is given in hamiltonian.cpp, which implements the Hamiltonian of a fermionic system in a 2D grid.</p>
+<p>A simple usage example is included in examplencpol.cpp. A more sophisticated application is given in benchmarkCase.cpp, which implements the Hamiltonian of a bosonic system on a 1D line.</p>
 
 <p>The implementation installs as a library. Subsequent use must specify the include directory of the header files and the library for compilation. </p>
 
@@ -79,6 +79,18 @@ $ make install
 </code></pre>
 
 <p>Specify these directories if the compiler cannot see them in the include and library paths.</p>
+
+<h1>
+<a name="known-issues" class="anchor" href="#known-issues"><span class="octicon octicon-link"></span></a>Known Issues</h1>
+
+<p>Hermicity of noncommuting variables is not handled correctly.</p>
+
+<p>The fast submonomial substitution does not handle some rare cases.</p>
+
+<h1>
+<a name="acknowledgment" class="anchor" href="#acknowledgment"><span class="octicon octicon-link"></span></a>Acknowledgment</h1>
+
+<p>This work is supported by the European Commission Seventh Framework Programme under Grant Agreement Number FP7-601138 <a href="http://pericles-project.eu/">PERICLES</a>, by the <a href="http://www.bsc.es/RES">Red Española de Supercomputación</a> grants number FI-2013-1-0008 and  FI-2013-3-0004, and by the <a href="http://www.snic.se/">Swedish National Infrastructure for Computing</a> project number SNIC 2014/2-7.</p>
 
 <h1>
 <a name="more-information" class="anchor" href="#more-information"><span class="octicon octicon-link"></span></a>More Information</h1>
